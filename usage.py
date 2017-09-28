@@ -12,9 +12,9 @@ def run():
 
 def get_filenames():
     filenames=[]
-    for file in os.listdir("./reports"):
+    for file in os.listdir("./usage"):
         if file.endswith(".csv"):
-            filenames.append(os.path.join("./reports", file))
+            filenames.append(os.path.join("./usage", file))
     return filenames
 
 def process_file(filename):
