@@ -1,12 +1,14 @@
 import os
 import csv
+from dateutil.parser import parse
+
+usage={}
 
 def run():
     filenames=get_filenames()
     for filename in filenames:
-        #[hourly, byol, legacy] =
-        x=process_file(filename)
-        print(str(x))
+        process_file(filename)
+    print_usage()
 
 def get_filenames():
     filenames=[]
@@ -23,15 +25,30 @@ def process_file(filename):
     with open(filename) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            if 'VM Image' in row['OfferType']:
-                date = ['UsageStartDate']
-                if 'silver_support' in row['ServicePlanName'] or 'hourly_pricing' in row['ServicePlanName']:
-                    hourly+=float(row['Usage'])
-                elif 'byol' in row['ServicePlanName']:
-                    byol+=float(row['Usage'])
-                else:
-                    legacy+=float(row['Usage'])
+            process_row(row)
 
-    return [hourly, byol, legacy]
+def process_row(row):
+    if 'VM Image' in row['OfferType']:
+        date = parse(row['UsageStartDate'])
+        date = str(date.month) + '/1/' + str(date.year)
+
+        if not date in usage:
+            usage[date]={}
+            usage[date]['hourly']=0
+            usage[date]['byol']=0
+            usage[date]['legacy']=0
+
+        if 'silver_support' in row['ServicePlanName'] or 'hourly_pricing' in row['ServicePlanName']:
+            usage[date]['hourly']+=float(row['Usage'])
+        elif 'byol' in row['ServicePlanName']:
+            usage[date]['byol']+=float(row['Usage'])
+        else:
+            usage[date]['legacy']+=float(row['Usage'])
+
+def print_usage():
+    print('Date, Hourly Pricing Usage, BYOL Usage, Legacy Usage, Total Usage')
+    for date in usage:
+        total = usage[date]['hourly']+usage[date]['byol']+usage[date]['legacy']
+        print(date + ', ' + str(usage[date]['hourly']) + ', ' + str(usage[date]['byol']) + ', ' + str(usage[date]['legacy']) + ', ' + str(total) + ', ' + str(usage[date]['revenue']))
 
 run()
