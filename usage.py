@@ -20,7 +20,8 @@ def get_filenames():
 def process_file(filename):
     hourly=0
     byol=0
-    legacy=0
+    legacyfree=0
+    legacypaid=0
 
     with open(filename) as csvfile:
         reader = csv.DictReader(csvfile)
@@ -36,19 +37,22 @@ def process_row(row):
             usage[date]={}
             usage[date]['hourly']=0
             usage[date]['byol']=0
-            usage[date]['legacy']=0
+            usage[date]['legacyfree']=0
+            usage[date]['legacypaid']=0
 
         if 'silver_support' in row['ServicePlanName'] or 'hourly_pricing' in row['ServicePlanName']:
             usage[date]['hourly']+=float(row['Usage'])
         elif 'byol' in row['ServicePlanName']:
             usage[date]['byol']+=float(row['Usage'])
+        elif 'Free' in row['SKUBillingType']:
+            usage[date]['legacyfree']+=float(row['Usage'])
         else:
-            usage[date]['legacy']+=float(row['Usage'])
+            usage[date]['legacypaid']+=float(row['Usage'])
 
 def print_usage():
-    print('Date, Hourly Pricing Usage, BYOL Usage, Legacy Usage, Total Usage')
+    print('Date, Hourly Pricing Usage, BYOL Usage, Legacy Free Usage, Legacy Paid Usage, Total Usage')
     for date in usage:
-        total = usage[date]['hourly']+usage[date]['byol']+usage[date]['legacy']
-        print(date + ', ' + str(usage[date]['hourly']) + ', ' + str(usage[date]['byol']) + ', ' + str(usage[date]['legacy']) + ', ' + str(total))
+        total = usage[date]['hourly']+usage[date]['byol']+usage[date]['legacyfree']+usage[date]['legacypaid']
+        print(date + ', ' + str(usage[date]['hourly']) + ', ' + str(usage[date]['byol']) + ', ' + str(usage[date]['legacyfree']) + ', ' + str(usage[date]['legacypaid']) + ', ' + str(total))
 
 run()
