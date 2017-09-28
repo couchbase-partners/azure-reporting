@@ -49,6 +49,6 @@ def print_usage():
     print('Date, Hourly Pricing Usage, BYOL Usage, Legacy Usage, Total Usage')
     for date in usage:
         total = usage[date]['hourly']+usage[date]['byol']+usage[date]['legacy']
-        print(date + ', ' + str(usage[date]['hourly']) + ', ' + str(usage[date]['byol']) + ', ' + str(usage[date]['legacy']) + ', ' + str(total) + ', ' + str(usage[date]['revenue']))
+        print(date + ', ' + str(usage[date]['hourly']) + ', ' + str(usage[date]['byol']) + ', ' + str(usage[date]['legacy']) + ', ' + str(total))
 
 run()
