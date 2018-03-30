@@ -7,6 +7,6 @@ To run the usage script, you'll first need to download the Azure usage reports f
     python usage.py
 
 ## Payout
-To run the payout script, download a CSV for "Inception to Date" [here](https://cloudpartner.azure.com/#insights/payout), rename it to payout.csv and put it in this directory.  After that you can run:
+To run the payout script, download a CSV that starts in 10/1/14 and ends at the current date [here](https://cloudpartner.azure.com/#insights/payout), rename it to payout.csv and put it in this directory.  After that you can run:
 
     python payout.py

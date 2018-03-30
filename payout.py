@@ -14,7 +14,7 @@ def process_file():
             update_revenue(row)
 
 def update_revenue(row):
-    date = row['Purchase Date']
+    date = row['Order Purchase Date']
     if date:
         date = date.split(' ')[0]
         date = parse(date)
@@ -27,7 +27,7 @@ def update_revenue(row):
         revenue[date]['revenue']=0
         revenue[date]['legacyrevenue']=0
 
-    if 'silver_support' in row['Offer & Plan'] or 'hourly_pricing' in row['Offer & Plan']:
+    if 'Hourly Pricing' in row['SKU']:
         revenue[date]['revenue']+=float(row['Payout Amount (PC)'])
     else:
         revenue[date]['legacyrevenue']+=float(row['Payout Amount (PC)'])
