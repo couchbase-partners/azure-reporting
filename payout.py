@@ -14,23 +14,25 @@ def process_file():
             update_revenue(row)
 
 def update_revenue(row):
-    date = row['Order Purchase Date']
+    date = row['Charge Date']
     if date:
         date = date.split(' ')[0]
         date = parse(date)
         date = str(date.month) + '/1/' + str(date.year)
     else:
-        date = '1/1/1'
+        date = None
 
-    if not date in revenue:
-        revenue[date]={}
-        revenue[date]['revenue']=0
-        revenue[date]['legacyrevenue']=0
+    if date:
+        if not date in revenue:
+            revenue[date]={}
+            revenue[date]['revenue']=0
+            revenue[date]['legacyrevenue']=0
 
-    if 'Hourly Pricing' in row['SKU']:
-        revenue[date]['revenue']+=float(row['Payout Amount (PC)'])
-    else:
-        revenue[date]['legacyrevenue']+=float(row['Payout Amount (PC)'])
+        if 'Charge' in row['Transaction Type'] or 'Customer Refund' in row['Transaction Type']:
+            if 'Hourly Pricing' in row['SKU']:
+                revenue[date]['revenue']+=float(row['Payout Amount (PC)'])
+            else:
+                revenue[date]['legacyrevenue']+=float(row['Payout Amount (PC)'])
 
 def print_revenue():
     print('Month, Revenue, Legacy Revenue, Total Revenue')
