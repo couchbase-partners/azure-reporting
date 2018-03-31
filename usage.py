@@ -29,25 +29,24 @@ def process_file(filename):
             process_row(row)
 
 def process_row(row):
-    if 'VM Image' in row['OfferType']:
-        date = parse(row['UsageStartDate'])
-        date = str(date.month) + '/1/' + str(date.year)
+    date = parse(row['Usage Start Date'])
+    date = str(date.month) + '/1/' + str(date.year)
 
-        if not date in usage:
-            usage[date]={}
-            usage[date]['hourly']=0
-            usage[date]['byol']=0
-            usage[date]['legacyfree']=0
-            usage[date]['legacypaid']=0
+    if not date in usage:
+        usage[date]={}
+        usage[date]['hourly']=0
+        usage[date]['byol']=0
+        usage[date]['legacyfree']=0
+        usage[date]['legacypaid']=0
 
-        if 'silver_support' in row['ServicePlanName'] or 'hourly_pricing' in row['ServicePlanName']:
-            usage[date]['hourly']+=float(row['Usage'])
-        elif 'byol' in row['ServicePlanName']:
-            usage[date]['byol']+=float(row['Usage'])
-        elif 'Free' in row['SKUBillingType']:
-            usage[date]['legacyfree']+=float(row['Usage'])
-        else:
-            usage[date]['legacypaid']+=float(row['Usage'])
+    if 'Hourly Pricing' in row['SKU']:
+        usage[date]['hourly']+=float(row['Usage'])
+    elif 'BYOL' in row['SKU']:
+        usage[date]['byol']+=float(row['Usage'])
+    elif 'Paid' in row['SKU Billing Type']:
+        usage[date]['legacypaid']+=float(row['Usage'])
+    else:
+        usage[date]['legacyfree']+=float(row['Usage'])
 
 def print_usage():
     print('Date, Hourly Pricing Usage, BYOL Usage, Legacy Free Usage, Legacy Paid Usage, Total Usage')
